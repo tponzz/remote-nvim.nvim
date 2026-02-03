@@ -70,7 +70,7 @@ local utils = require("remote-nvim.utils")
 local function get_copy_paths(copy_config)
   local local_dirs = copy_config.dirs
   if local_dirs == "*" then
-    return { utils.path_join(utils.is_windows, copy_config.base, ".") }
+    return { utils.path_join(utils.is_windows, copy_config.base) }
   else
     assert(
       type(local_dirs) == "table",
@@ -670,10 +670,12 @@ function Provider:_setup_remote()
     self:run_command(install_neovim_cmd, "Installing Neovim (if required)")
 
     -- Upload user neovim config, if necessary
+    local remote_path = vim.fn.fnamemodify(self._remote_neovim_config_path, ":h")
     if self:_get_neovim_config_upload_preference() then
       self:upload(
         self._local_path_to_remote_neovim_config,
-        self._remote_neovim_config_path,
+        -- self._remote_neovim_config_path,
+        remote_path,
         "Copying your Neovim configuration files onto remote",
         remote_nvim.config.remote.copy_dirs.config.compression
       )
